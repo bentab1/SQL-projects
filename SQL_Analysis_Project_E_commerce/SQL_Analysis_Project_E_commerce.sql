@@ -4,7 +4,7 @@
 
 
 -- ========================================
--- Tables for E-commerce Product Analysis
+-- Tables for E-commerce Analysis
 -- ========================================
 
 -- Customers Table
@@ -39,6 +39,8 @@ CREATE TABLE order_items (
     quantity INT,
     price NUMERIC(10,2)
 );
+
+
 
 -- ========================================
 -- Customers (30 rows)
@@ -111,7 +113,7 @@ INSERT INTO products (name, category, price) VALUES
 ('Mouse Pad XL', 'Accessories', 30.00),
 ('Headset Gaming', 'Accessories', 90.00);
 
-------Orders 30 rows
+
 INSERT INTO orders (order_id, customer_id, order_date, total_amount) VALUES
 (1,1,'2025-01-01',1250.00),
 (2,2,'2025-01-02',800.00),
@@ -144,7 +146,7 @@ INSERT INTO orders (order_id, customer_id, order_date, total_amount) VALUES
 (29,9,'2025-01-29',30.00),
 (30,10,'2025-01-30',90.00);
 
--------Ordered items 30 rows
+
 INSERT INTO order_items (order_id, product_id, quantity, price) VALUES
 (1,1,1,1200.00),
 (1,4,1,50.00),
@@ -182,7 +184,7 @@ INSERT INTO order_items (order_id, product_id, quantity, price) VALUES
 
 
 
----- seletc Orders descending to show the highest-spending customers
+----Orders descending to show the highest-spending customers
 SELECT
     c.customer_id,
     c.name AS customer_name,
@@ -227,7 +229,7 @@ ecommerce-# LIMIT 10;
 * Calculates total revenue per customer (quantity * price).
 * Groups by customer and orders descending to get the top 10.
 
-------#### Select Product that has Grown the Most This Year
+------ Product that has Grown the Most This Year
 WITH last_year_sales AS (
     SELECT
         oi.product_id,
@@ -309,7 +311,7 @@ AS qty_last_year FROM orders o JOIN order_items oi ON o.order_id = oi.order_id
 * Orders descending and takes the top product with highest growth.
 
 
------### Select Top 5 Products by Revenue
+-----Top 5 Products by Revenue
 
 SELECT
     p.product_id,
@@ -357,7 +359,7 @@ ORDER BY total_revenue DESC LIMIT 5) TO 'C:/Users/benja/Portfolio/SQL_Analysis_P
 
 ---
 
-------### Select Monthly Revenue Trends
+### 4️⃣ Monthly Revenue Trends
 
 SELECT
     DATE_TRUNC('month', o.order_date) AS month,
@@ -387,8 +389,7 @@ ecommerce-# ORDER BY month;
 * Calculates total revenue per month.
 * Helps visualize revenue trends over time.
 
-
- ----### Select Customer Retention Analysis (Repeat Customers)
+ 5️⃣ Customer Retention Analysis (Repeat Customers)
 
 WITH first_orders AS (
     SELECT customer_id, MIN(order_date) AS first_order_date
@@ -442,3 +443,4 @@ ecommerce-# FROM repeat_orders;
 
 * `oi` is an alias for the `order_items` table.
 * Aliases like `c` for `customers` and `o` for `orders` are used to make queries shorter and clearer.
+* These queries are suitable for a Product Analyst or Data Analyst portfolio project.
