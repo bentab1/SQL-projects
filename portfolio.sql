@@ -1,4 +1,4 @@
-**SQL Analysis Project – E-commerce Example**
+**SQL Analysis Project – E-commerce**
 
  1️⃣ Top 10 Customers by Revenue
 
