@@ -1,0 +1,31 @@
+settlement_id,reference_number,account_number,bank_name,amount,settlement_date,settlement_status,remarks
+24,REF004,ACC30001,Bank A,2000,33:22.8,Pending,Amount mismatch with Bank B
+25,REF009,ACC20001,Bank A,900,33:22.8,Pending,Amount mismatch with Bank B
+26,REF011,ACC40001,Bank A,1500,33:22.8,Pending,Amount mismatch with Bank B
+27,REF016,ACC30001,Bank A,700,33:22.8,Pending,Amount mismatch with Bank B
+28,REF021,ACC20001,Bank A,1400,33:22.8,Pending,Amount mismatch with Bank B
+29,REF024,ACC50001,Bank A,1700,33:22.8,Pending,Amount mismatch with Bank B
+30,REF030,ACC50001,Bank A,1300,33:22.8,Pending,Amount mismatch with Bank B
+8,REF010,ACC30001,Bank A,1100,32:49.8,Settled,Matched with Bank B
+9,REF012,ACC50001,Bank A,2000,32:49.8,Settled,Matched with Bank B
+10,REF013,ACC10001,Bank A,800,32:49.8,Settled,Matched with Bank B
+11,REF014,ACC10002,Bank A,400,32:49.8,Settled,Matched with Bank B
+12,REF015,ACC20001,Bank A,600,32:49.8,Settled,Matched with Bank B
+13,REF017,ACC40001,Bank A,1200,32:49.8,Settled,Matched with Bank B
+14,REF018,ACC50001,Bank A,500,32:49.8,Settled,Matched with Bank B
+15,REF019,ACC10001,Bank A,1300,32:49.8,Settled,Matched with Bank B
+1,REF001,ACC10001,Bank A,1000,32:49.8,Settled,Matched with Bank B
+17,REF022,ACC30001,Bank A,1600,32:49.8,Settled,Matched with Bank B
+18,REF023,ACC40001,Bank A,1100,32:49.8,Settled,Matched with Bank B
+19,REF025,ACC10001,Bank A,800,32:49.8,Settled,Matched with Bank B
+20,REF026,ACC10002,Bank A,600,32:49.8,Settled,Matched with Bank B
+21,REF027,ACC20001,Bank A,750,32:49.8,Settled,Matched with Bank B
+22,REF028,ACC30001,Bank A,900,32:49.8,Settled,Matched with Bank B
+23,REF029,ACC40001,Bank A,1000,32:49.8,Settled,Matched with Bank B
+16,REF020,ACC10002,Bank A,900,32:49.8,Settled,Matched with Bank B
+2,REF002,ACC10002,Bank A,500,32:49.8,Settled,Matched with Bank B
+3,REF003,ACC20001,Bank A,1500,32:49.8,Settled,Matched with Bank B
+4,REF005,ACC40001,Bank A,2500,32:49.8,Settled,Matched with Bank B
+5,REF006,ACC50001,Bank A,3000,32:49.8,Settled,Matched with Bank B
+6,REF007,ACC10001,Bank A,1200,32:49.8,Settled,Matched with Bank B
+7,REF008,ACC10002,Bank A,700,32:49.8,Settled,Matched with Bank B
