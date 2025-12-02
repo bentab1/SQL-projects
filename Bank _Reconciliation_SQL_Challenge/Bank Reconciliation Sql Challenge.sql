@@ -112,9 +112,9 @@ VALUES
 ('ACC40001', 1000, '2025-11-28', 'Deposit', 'REF029'), -- match
 ('ACC50001', 1350, '2025-11-29', 'Withdrawal', 'REF030'); -- mismatch
 
-4️⃣ Populate Settlement Table Automatically
---  Matched Transactions
 
+----- Populate Settlement Table Automatically
+--  Matched Transactions
 
 INSERT INTO settlement (
     reference_number, account_number, bank_name, amount, settlement_status, remarks
@@ -132,7 +132,7 @@ JOIN bank_b_transactions b
 WHERE a.amount = b.amount;
 
 
--- 3️⃣ Pending / Mismatched Transactions from Bank B (only insert if not already in settlement)
+-- Select Pending / Mismatched Transactions from Bank B (only insert if not already in settlement)
 INSERT INTO settlement (
     reference_number, account_number, bank_name, amount, settlement_status, remarks
 )
@@ -159,6 +159,41 @@ WHERE (a.reference_number IS NULL OR b.amount <> a.amount)
 -- View all settlements
 SELECT * FROM settlement ORDER BY settlement_status DESC, settlement_date;
 
+-----Result:
+ settlement_id | reference_number | account_number | bank_name | amount  |      settlement_date       | settlement_status |           remarks
+---------------+------------------+----------------+-----------+---------+----------------------------+-------------------+-----------------------------
+             1 | REF001           | ACC10001       | Bank A    | 1000.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+             2 | REF002           | ACC10002       | Bank A    |  500.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+             3 | REF003           | ACC20001       | Bank A    | 1500.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+             4 | REF005           | ACC40001       | Bank A    | 2500.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+             5 | REF006           | ACC50001       | Bank A    | 3000.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+             6 | REF007           | ACC10001       | Bank A    | 1200.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+             7 | REF008           | ACC10002       | Bank A    |  700.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+             8 | REF010           | ACC30001       | Bank A    | 1100.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+             9 | REF012           | ACC50001       | Bank A    | 2000.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+            10 | REF013           | ACC10001       | Bank A    |  800.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+            11 | REF014           | ACC10002       | Bank A    |  400.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+            12 | REF015           | ACC20001       | Bank A    |  600.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+            13 | REF017           | ACC40001       | Bank A    | 1200.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+            14 | REF018           | ACC50001       | Bank A    |  500.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+            15 | REF019           | ACC10001       | Bank A    | 1300.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+            16 | REF020           | ACC10002       | Bank A    |  900.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+            17 | REF022           | ACC30001       | Bank A    | 1600.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+            18 | REF023           | ACC40001       | Bank A    | 1100.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+            19 | REF025           | ACC10001       | Bank A    |  800.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+            20 | REF026           | ACC10002       | Bank A    |  600.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+            21 | REF027           | ACC20001       | Bank A    |  750.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+            22 | REF028           | ACC30001       | Bank A    |  900.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+            23 | REF029           | ACC40001       | Bank A    | 1000.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+            24 | REF004           | ACC30001       | Bank A    | 2000.00 | 2025-12-02 11:11:29.211739 | Pending           | Amount mismatch with Bank B
+            25 | REF009           | ACC20001       | Bank A    |  900.00 | 2025-12-02 11:11:29.211739 | Pending           | Amount mismatch with Bank B
+            26 | REF011           | ACC40001       | Bank A    | 1500.00 | 2025-12-02 11:11:29.211739 | Pending           | Amount mismatch with Bank B
+            27 | REF016           | ACC30001       | Bank A    |  700.00 | 2025-12-02 11:11:29.211739 | Pending           | Amount mismatch with Bank B
+            28 | REF021           | ACC20001       | Bank A    | 1400.00 | 2025-12-02 11:11:29.211739 | Pending           | Amount mismatch with Bank B
+            29 | REF024           | ACC50001       | Bank A    | 1700.00 | 2025-12-02 11:11:29.211739 | Pending           | Amount mismatch with Bank B
+            30 | REF030           | ACC50001       | Bank A    | 1300.00 | 2025-12-02 11:11:29.211739 | Pending           | Amount mismatch with Bank B
+(30 rows)
+
 ----Copy selection to local drive
 \copy (SELECT * FROM settlement ORDER BY settlement_status DESC, settlement_date)TO 'C:/Users/benja/Portfolio/Bank_Reconciliation_SQL_Challenge.csv' WITH CSV HEADER;
 
@@ -166,7 +201,42 @@ SELECT * FROM settlement ORDER BY settlement_status DESC, settlement_date;
 
 5️⃣ Sample Settlement Queries
 -- View all settlements
-SELECT * FROM settlement ORDER BY settlement_status DESC, settlement_date;
+SELECT * FROM settlement ORDER BY amount DESC, settlement_date;
+
+----Result:
+ settlement_id | reference_number | account_number | bank_name | amount  |      settlement_date       | settlement_status |           remarks
+---------------+------------------+----------------+-----------+---------+----------------------------+-------------------+-----------------------------
+             5 | REF006           | ACC50001       | Bank A    | 3000.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+             4 | REF005           | ACC40001       | Bank A    | 2500.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+             9 | REF012           | ACC50001       | Bank A    | 2000.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+            24 | REF004           | ACC30001       | Bank A    | 2000.00 | 2025-12-02 11:11:29.211739 | Pending           | Amount mismatch with Bank B
+            29 | REF024           | ACC50001       | Bank A    | 1700.00 | 2025-12-02 11:11:29.211739 | Pending           | Amount mismatch with Bank B
+            17 | REF022           | ACC30001       | Bank A    | 1600.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+             3 | REF003           | ACC20001       | Bank A    | 1500.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+            26 | REF011           | ACC40001       | Bank A    | 1500.00 | 2025-12-02 11:11:29.211739 | Pending           | Amount mismatch with Bank B
+            28 | REF021           | ACC20001       | Bank A    | 1400.00 | 2025-12-02 11:11:29.211739 | Pending           | Amount mismatch with Bank B
+            15 | REF019           | ACC10001       | Bank A    | 1300.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+            30 | REF030           | ACC50001       | Bank A    | 1300.00 | 2025-12-02 11:11:29.211739 | Pending           | Amount mismatch with Bank B
+             6 | REF007           | ACC10001       | Bank A    | 1200.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+            13 | REF017           | ACC40001       | Bank A    | 1200.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+             8 | REF010           | ACC30001       | Bank A    | 1100.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+            18 | REF023           | ACC40001       | Bank A    | 1100.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+             1 | REF001           | ACC10001       | Bank A    | 1000.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+            23 | REF029           | ACC40001       | Bank A    | 1000.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+            22 | REF028           | ACC30001       | Bank A    |  900.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+            16 | REF020           | ACC10002       | Bank A    |  900.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+            25 | REF009           | ACC20001       | Bank A    |  900.00 | 2025-12-02 11:11:29.211739 | Pending           | Amount mismatch with Bank B
+            19 | REF025           | ACC10001       | Bank A    |  800.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+            10 | REF013           | ACC10001       | Bank A    |  800.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+            21 | REF027           | ACC20001       | Bank A    |  750.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+             7 | REF008           | ACC10002       | Bank A    |  700.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+            27 | REF016           | ACC30001       | Bank A    |  700.00 | 2025-12-02 11:11:29.211739 | Pending           | Amount mismatch with Bank B
+            12 | REF015           | ACC20001       | Bank A    |  600.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+            20 | REF026           | ACC10002       | Bank A    |  600.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+            14 | REF018           | ACC50001       | Bank A    |  500.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+             2 | REF002           | ACC10002       | Bank A    |  500.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+            11 | REF014           | ACC10002       | Bank A    |  400.00 | 2025-12-02 11:11:09.882436 | Settled           | Matched with Bank B
+(30 rows)
 ----copy to local file
 \copy (SELECT * FROM settlement ORDER BY settlement_status ASC, settlement_date) TO 'C:/Users/benja/Portfolio/Bank_Reconciliation_SQL_Challenge2.csv' WITH CSV HEADER;
 -----copy and order by amount
@@ -178,50 +248,56 @@ SELECT settlement_status, COUNT(*) AS total_transactions, SUM(amount) AS total_a
 FROM settlement
 GROUP BY settlement_status;
 
-## 5. Sample Settlement Queries
+-----Result:
+ settlement_status | total_transactions | total_amount
+-------------------+--------------------+--------------
+ Pending           |                  7 |      9500.00
+ Settled           |                 23 |     25950.00
+(2 rows)
 
--- View all settlements
-SELECT * FROM settlement ORDER BY settlement_status DESC, settlement_date;
-
--- Count by settlement status
-SELECT settlement_status, COUNT(*) AS total_transactions, SUM(amount) AS total_amount
-FROM settlement
-GROUP BY settlement_status;
 
 -- Find mismatched or missing transactions
 SELECT * FROM settlement WHERE remarks LIKE '%Amount mismatch%';
+----Result:
+ settlement_id | reference_number | account_number | bank_name | amount  |      settlement_date       | settlement_status |           remarks
+---------------+------------------+----------------+-----------+---------+----------------------------+-------------------+-----------------------------
+            24 | REF004           | ACC30001       | Bank A    | 2000.00 | 2025-12-02 11:11:29.211739 | Pending           | Amount mismatch with Bank B
+            25 | REF009           | ACC20001       | Bank A    |  900.00 | 2025-12-02 11:11:29.211739 | Pending           | Amount mismatch with Bank B
+            26 | REF011           | ACC40001       | Bank A    | 1500.00 | 2025-12-02 11:11:29.211739 | Pending           | Amount mismatch with Bank B
+            27 | REF016           | ACC30001       | Bank A    |  700.00 | 2025-12-02 11:11:29.211739 | Pending           | Amount mismatch with Bank B
+            28 | REF021           | ACC20001       | Bank A    | 1400.00 | 2025-12-02 11:11:29.211739 | Pending           | Amount mismatch with Bank B
+            29 | REF024           | ACC50001       | Bank A    | 1700.00 | 2025-12-02 11:11:29.211739 | Pending           | Amount mismatch with Bank B
+            30 | REF030           | ACC50001       | Bank A    | 1300.00 | 2025-12-02 11:11:29.211739 | Pending           | Amount mismatch with Bank B
+(7 rows)
+
 SELECT * FROM settlement WHERE remarks = 'Missing in Bank A';
+----Result:
+ settlement_id | reference_number | account_number | bank_name | amount | settlement_date | settlement_status | remarks
+---------------+------------------+----------------+-----------+--------+-----------------+-------------------+---------
+(0 rows)
+
 SELECT * FROM settlement WHERE remarks = 'Missing in Bank B';
+------Result:
+ settlement_id | reference_number | account_number | bank_name | amount | settlement_date | settlement_status | remarks
+---------------+------------------+----------------+-----------+--------+-----------------+-------------------+---------
+(0 rows)
 
 
---6. Practice Exercises
-- 1. List all settled transactions
--- 3. Find all mismatched transactions
-SELECT * FROM settlement WHERE remarks LIKE '%Amount mismatch%';
 
-
--- 4. Find transactions missing in Bank A
-SELECT * FROM settlement WHERE remarks = 'Missing in Bank A';
-
-
--- 5. Find transactions missing in Bank B
-SELECT * FROM settlement WHERE remarks = 'Missing in Bank B';
-
-
--- 6. Count transactions by status
-SELECT settlement_status, COUNT(*) AS total_transactions, SUM(amount) AS total_amount
-FROM settlement
-GROUP BY settlement_status;
-
-
--- 7. Total pending amount per bank
+--Total pending amount per bank
 SELECT bank_name, SUM(amount) AS pending_amount
 FROM settlement
 WHERE settlement_status = 'Pending'
 GROUP BY bank_name;
 
+-----Result:
+ bank_name | pending_amount
+-----------+----------------
+ Bank A    |        9500.00
+(1 row)
 
--- 8. Top 5 accounts with highest pending settlement
+
+-- Top 5 accounts with highest pending settlement
 SELECT account_number, SUM(amount) AS total_pending
 FROM settlement
 WHERE settlement_status = 'Pending'
@@ -229,16 +305,36 @@ GROUP BY account_number
 ORDER BY total_pending DESC
 LIMIT 5;
 
+---Result:
+ account_number | total_pending
+----------------+---------------
+ ACC50001       |       3000.00
+ ACC30001       |       2700.00
+ ACC20001       |       2300.00
+ ACC40001       |       1500.00
+(4 rows)
 
--- 9. Reconcile Bank A vs Bank B
+--Reconcile Bank A vs Bank B
 SELECT a.reference_number, a.account_number AS bank_a_account, a.amount AS bank_a_amount,
 b.account_number AS bank_b_account, b.amount AS bank_b_amount
 FROM bank_a_transactions a
 JOIN bank_b_transactions b ON a.reference_number = b.reference_number
 WHERE a.amount <> b.amount;
 
+----Result:
+ reference_number | bank_a_account | bank_a_amount | bank_b_account | bank_b_amount
+------------------+----------------+---------------+----------------+---------------
+ REF004           | ACC30001       |       2000.00 | ACC30001       |       2100.00
+ REF009           | ACC20001       |        900.00 | ACC20001       |        950.00
+ REF011           | ACC40001       |       1500.00 | ACC40001       |       1400.00
+ REF016           | ACC30001       |        700.00 | ACC30001       |        750.00
+ REF021           | ACC20001       |       1400.00 | ACC20001       |       1450.00
+ REF024           | ACC50001       |       1700.00 | ACC50001       |       1800.00
+ REF030           | ACC50001       |       1300.00 | ACC50001       |       1350.00
+(7 rows)
 
--- 10. Summary report per account
+
+-- Summary report per account
 SELECT account_number,
 SUM(CASE WHEN settlement_status='Settled' THEN amount ELSE 0 END) AS total_settled,
 SUM(CASE WHEN settlement_status='Pending' THEN amount ELSE 0 END) AS total_pending,
@@ -246,86 +342,36 @@ SUM(amount) AS total_amount
 FROM settlement
 GROUP BY account_number
 ORDER BY total_amount DESC;
+----Rseult:
+ account_number | total_settled | total_pending | total_amount
+----------------+---------------+---------------+--------------
+ ACC50001       |       5500.00 |       3000.00 |      8500.00
+ ACC40001       |       5800.00 |       1500.00 |      7300.00
+ ACC30001       |       3600.00 |       2700.00 |      6300.00
+ ACC20001       |       2850.00 |       2300.00 |      5150.00
+ ACC10001       |       5100.00 |             0 |      5100.00
+ ACC10002       |       3100.00 |             0 |      3100.00
+(6 rows)
 
-
--- 11. Identify accounts with both settled and pending transactions
+---Identify accounts with both settled and pending transactions
 SELECT account_number
 FROM settlement
 GROUP BY account_number
 HAVING COUNT(DISTINCT settlement_status) > 1;
 
+---Result:
+ account_number
+----------------
+ ACC20001
+ ACC30001
+ ACC40001
+ ACC50001
+(4 rows)
 
--- 12. Simulate manual settlement
+--Simulate manual settlement
 UPDATE settlement
 SET settlement_status = 'Settled', remarks = 'Manually verified and settled'
 WHERE reference_number = 'REF004';
-## 7. Additional Challenges
-
-* Aggregate reports by bank and account.
-* Detect duplicates or exceptions.
-* Multi-account settlements and reversal handling.
-
-## 8. Hints / Notes
-
-* Use JOIN, LEFT JOIN for reconciliation.
-* Use GROUP BY and SUM for totals.
-* Use CASE statements for conditional calculations.
-* Filter pending transactions to identify mismatches or missing records.
-
-## 9. Reconciliation Setup Methods
-
-### A. Direct Database Access
-
-* Rare; requires read-only access.
-* Example query to fetch Bank B transactions.
-
-### B. API Access
-
-* Common; banks expose REST/SOAP APIs.
-* Fetch data, import into local database for reconciliation.
-* Example in Python using requests and pandas.
-
-### C. File Exchange
-
-* CSV, Excel, or SWIFT messages.
-* Load files into Bank A database and join with Bank B data.
-
-## 10. Security Considerations
-
-* Secure channels (VPN, API tokens, encrypted files).
-* Compliance, logs, and approvals.
-
-## 11. SQL Table Modifications
-
-### 11.1 Add a Column
 
 
-ALTER TABLE table_name ADD COLUMN column_name data_type [DEFAULT value];
 
-
-### 11.2 Rename a Column
-
-
-ALTER TABLE table_name RENAME COLUMN old_column_name TO new_column_name;
-
-
-### 11.3 Rename Table
-
-
-ALTER TABLE old_table_name RENAME TO new_table_name;
-
-
-### 11.4 Change Column Type
-
-
-ALTER TABLE table_name ALTER COLUMN column_name TYPE new_data_type;
-
-
-### Summary of Operations
-
-| Operation          | Command                                                        |
-| ------------------ | -------------------------------------------------------------- |
-| Add column         | ALTER TABLE table_name ADD COLUMN column_name TYPE;            |
-| Rename column      | ALTER TABLE table_name RENAME COLUMN old_name TO new_name;     |
-| Rename table       | ALTER TABLE old_table_name RENAME TO new_table_name;           |
-| Change column type | ALTER TABLE table_name ALTER COLUMN column_name TYPE new_type; |
