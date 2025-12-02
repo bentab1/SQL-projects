@@ -115,77 +115,64 @@ VALUES
 
 -- ## Populate Settlement Table Automatically
 -- ---Matched Transactions
+
+
+
 INSERT INTO settlement (
-    reference_number,account_number,bank_name,amount,settlement_status, remarks
+    reference_number, account_number, bank_name, amount, settlement_status, remarks
 )
 SELECT 
-    a.reference_number, a.account_number,'Bank A',a.amount,'Settled', 'Matched with Bank B'
-FROM 
-    bank_a_transactions a
-JOIN 
-    bank_b_transactions b 
+    a.reference_number, 
+    a.account_number,
+    'Bank A',
+    a.amount,
+    'Settled',
+    'Matched with Bank B'
+FROM bank_a_transactions a
+JOIN bank_b_transactions b 
     ON a.reference_number = b.reference_number
-WHERE 
-    a.amount = b.amount;
+WHERE a.amount = b.amount;
 
------ Mismatched Transactions
+
+-- 3️⃣ Pending / Mismatched Transactions from Bank B (only insert if not already in settlement)
 INSERT INTO settlement (
-    reference_number,account_number,bank_name, amount, settlement_status,remarks
+    reference_number, account_number, bank_name, amount, settlement_status, remarks
 )
 SELECT 
-    a.reference_number, a.account_number,'Bank A', a.amount, 'Pending',
-    CASE 
-        WHEN b.reference_number IS NULL THEN 'Missing in Bank B'
-        ELSE 'Amount mismatch with Bank B'
-    END
-FROM 
-    bank_a_transactions a
-LEFT JOIN 
-    bank_b_transactions b 
-    ON a.reference_number = b.reference_number
-WHERE 
-    b.reference_number IS NULL 
-    OR a.amount <> b.amount;
-
-------Missing transaction
-
-INSERT INTO settlement (
-    reference_number, account_number,bank_name, amount,settlement_status, remarks
-)
-SELECT 
-    b.reference_number, b.account_number,'Bank B',b.amount,'Pending',
+    b.reference_number, 
+    b.account_number,
+    'Bank B',
+    b.amount,
+    'Pending',
     CASE 
         WHEN a.reference_number IS NULL THEN 'Missing in Bank A'
         ELSE 'Amount mismatch with Bank A'
     END
-FROM 
-    bank_b_transactions b
-LEFT JOIN 
-    bank_a_transactions a 
+FROM bank_b_transactions b
+LEFT JOIN bank_a_transactions a 
     ON b.reference_number = a.reference_number
-WHERE 
-    a.reference_number IS NULL 
-    OR b.amount <> a.amount;
+WHERE (a.reference_number IS NULL OR b.amount <> a.amount)
+  AND b.reference_number NOT IN (SELECT reference_number FROM settlement);
 
 
----Missing transactions
-INSERT INTO settlement (
-    reference_number, account_number,bank_name,amount,settlement_status,remarks
-)
-SELECT 
-    a.reference_number,a.account_number, 'Bank A',a.amount,'Pending',
-    CASE 
-        WHEN b.reference_number IS NULL THEN 'Missing in Bank B'
-        ELSE 'Amount mismatch with Bank B'
-    END
-FROM 
-    bank_a_transactions a
-LEFT JOIN 
-    bank_b_transactions b 
-    ON a.reference_number = b.reference_number
-WHERE 
-    (b.reference_number IS NULL OR a.amount <> b.amount)
-    AND a.transaction_date BETWEEN '2025-11-10' AND CURRENT_DATE;
+------------------------------------------------------------------------------
+️---### Settlement Queries
+
+-- View all settlements
+SELECT * FROM settlement ORDER BY settlement_status DESC, settlement_date;
+
+----Copy selection to local drive
+\copy (SELECT * FROM settlement ORDER BY settlement_status DESC, settlement_date)TO 'C:/Users/benja/Portfolio/Bank_Reconciliation_SQL_Challenge.csv' WITH CSV HEADER;
+
+--------------------------------------------------------------------------
+
+-- View all settlements
+SELECT * FROM settlement ORDER BY settlement_status DESC, settlement_date;
+----copy to local file
+\copy (SELECT * FROM settlement ORDER BY settlement_status ASC, settlement_date) TO 'C:/Users/benja/Portfolio/Bank_Reconciliation_SQL_Challenge2.csv' WITH CSV HEADER;
+-----copy and order by amount
+\copy (SELECT * FROM settlement ORDER BY amount ASC, settlement_date) TO 'C:/Users/benja/Portfolio/Bank_Reconciliation_SQL_Challenge3.csv' WITH CSV HEADER;
+
 
 ------------------------------------------------------------------------------
 ️---### Settlement Queries
@@ -227,6 +214,7 @@ FROM settlement
 WHERE settlement_status = 'Pending'
 GROUP BY bank_name;
 
+\copy (SELECT bank_name, SUM(amount) AS pending_amount FROM settlement WHERE settlement_status = 'Pending' GROUP BY bank_name) TO 'C:/Users/benja/Portfolio/Bank_Reconciliation_SQL_Challenge4.csv' WITH CSV HEADER;
 
 ------Top 5 accounts with highest pending settlement
 SELECT account_number, SUM(amount) AS total_pending
@@ -253,6 +241,8 @@ SUM(amount) AS total_amount
 FROM settlement
 GROUP BY account_number
 ORDER BY total_amount DESC;
+----copy to the local drive 
+\copy (SELECT account_number, SUM(CASE WHEN settlement_status='Settled' THEN amount ELSE 0 END) AS total_settled, SUM(CASE WHEN settlement_status='Pending' THEN amount ELSE 0 END) AS total_pending, SUM(amount) AS total_amount FROM settlement GROUP BY account_number ORDER BY total_amount DESC) TO 'C:/Users/benja/Portfolio/Bank_Reconciliation_SQL_Challenge5.csv' WITH CSV HEADER;
 
 
 -----Identify accounts with both settled and pending transactions
